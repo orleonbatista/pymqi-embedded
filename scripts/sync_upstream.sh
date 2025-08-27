@@ -9,7 +9,6 @@ BUILD_DIR="$ROOT_DIR/.build"
 SRC_DIR="$BUILD_DIR/pymqi-src"
 
 PYMQI_VERSION="${PYMQI_VERSION:-1.13.1}"
-SDIST_URL="https://files.pythonhosted.org/packages/source/p/pymqi/pymqi-${PYMQI_VERSION}.tar.gz"
 SDIST_PATH="${PYMQI_SDIST_PATH:-$BUILD_DIR/pymqi-${PYMQI_VERSION}.tar.gz}"
 
 rm -rf "$SRC_DIR"
@@ -17,7 +16,8 @@ mkdir -p "$SRC_DIR"
 mkdir -p "$ROOT_DIR/src/pymqi"
 
 if [ ! -f "$SDIST_PATH" ]; then
-  curl -L "$SDIST_URL" -o "$SDIST_PATH"
+  python -m pip download --no-binary :all: "pymqi==${PYMQI_VERSION}" -d "$BUILD_DIR"
+  SDIST_PATH="$BUILD_DIR/pymqi-${PYMQI_VERSION}.tar.gz"
 fi
 
 tar -xzf "$SDIST_PATH" -C "$SRC_DIR" --strip-components=1
@@ -32,6 +32,7 @@ cp "$SRC_DIR/LICENSE" "$LICENSE_DST"
 # ---------------------------------------------------------------------------
 VENDOR_DIR="$ROOT_DIR/vendor/mq"
 MQ_BUILD_DIR="$BUILD_DIR/mq-src"
+MQ_CLIENT_TAR_URL="${MQ_CLIENT_TAR_URL:-https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.3.5.0-IBM-MQC-Redist-LinuxX64.tar.gz}"
 
 if [[ -n "${MQ_CLIENT_TAR_PATH:-}" || -n "${MQ_CLIENT_TAR_URL:-}" ]]; then
   rm -rf "$VENDOR_DIR" "$MQ_BUILD_DIR"

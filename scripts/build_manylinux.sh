@@ -2,23 +2,20 @@
 set -euo pipefail
 
 # Build manylinux wheels bundling the IBM MQ Client.
-# Provide MQ_CLIENT_TAR_URL or MQ_CLIENT_TAR_PATH to supply the MQ runtime.
+# Downloads the MQ runtime if not supplied via MQ_CLIENT_TAR_URL or MQ_CLIENT_TAR_PATH.
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VENDOR_DIR="$ROOT_DIR/vendor/mq"
 
 rm -rf "$VENDOR_DIR"
 
-if [[ -z "${MQ_CLIENT_TAR_PATH:-}" && -z "${MQ_CLIENT_TAR_URL:-}" ]]; then
-  echo "Provide MQ_CLIENT_TAR_URL or MQ_CLIENT_TAR_PATH" >&2
-  exit 1
-fi
+MQ_CLIENT_TAR_URL="${MQ_CLIENT_TAR_URL:-https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.3.5.0-IBM-MQC-Redist-LinuxX64.tar.gz}"
 
 "$ROOT_DIR/scripts/sync_upstream.sh"
 
 unset MQ_CLIENT_TAR_URL MQ_CLIENT_TAR_PATH
 
-for PYVER in cp38 cp39 cp310 cp311 cp312; do
+for PYVER in cp36 cp37 cp38 cp39 cp310 cp311 cp312; do
   PYBIN="/opt/python/${PYVER}/bin"
   MQ_INSTALLATION_PATH="$VENDOR_DIR" "$PYBIN/python" -m build --wheel
   for whl in dist/pymqi_embedded-*.whl; do

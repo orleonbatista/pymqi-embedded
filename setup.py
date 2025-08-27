@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import os
 import shutil
 from pathlib import Path
@@ -84,6 +82,8 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
     ],
+    python_requires=">=3.6",
+    install_requires=["dataclasses; python_version < '3.7'"],
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,

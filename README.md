@@ -1,8 +1,8 @@
 # pymqi-embedded
 
-`pymqi-embedded` is a fork of the [PyMQI](https://pypi.org/project/pymqi/) bindings for the IBM MQ
-messaging system. The project packages the IBM MQ Client runtime inside the wheel so
-that users do not need a system wide installation of the MQ libraries.
+`pymqi-embedded` embeds the [PyMQI](https://pypi.org/project/pymqi/) bindings for the IBM MQ
+messaging system and bundles the IBM MQ Client runtime inside the wheel so that users do not
+need a system wide installation of the MQ libraries.
 
 ## Features
 
@@ -10,6 +10,9 @@ that users do not need a system wide installation of the MQ libraries.
 - Linux wheels are built as `manylinux2014_x86_64` (or `manylinux_2_28_x86_64`).
 - Windows wheels bundle the required DLLs using [delvewheel](https://github.com/adang1345/delvewheel).
 - Pure Python API compatible with `pymqi` while keeping the import name `pymqi`.
+
+The upstream PyMQI sources are synchronized during the build process. See `scripts/sync_upstream.sh`
+and the preserved license in `LICENSE-THIRD-PARTY`.
 
 ## Development
 
@@ -34,25 +37,50 @@ poetry run pytest
 
 ### Linux
 
-The `scripts/build_manylinux.sh` helper is intended to run inside a
-`manylinux2014` or `manylinux_2_28` container. It installs the IBM MQ runtime,
-loops over the supported Python versions and produces repaired wheels using
-`auditwheel`.
+The IBM MQ Client must be provided either by setting `MQ_INSTALLATION_PATH` or
+by extracting it to `vendor/mq/` before building. The expected layout is:
+
+```
+vendor/mq/
+    include/cmqc.h
+    lib64/libmqic_r.so   # or lib/mqic_r.lib on Windows
+```
+
+### Linux
+
+Run inside a `manylinux` container:
+
+```bash
+MQ_CLIENT_TAR_URL=<url to MQ client> scripts/build_manylinux.sh
+```
+
+The script synchronizes the PyMQI sources, builds wheels for CPython 3.8–3.12
+and repairs them with `auditwheel`.
 
 ### Windows
+Use the PowerShell script `scripts/build_windows.ps1` from a Visual Studio
+Developer Command Prompt:
 
-Use the PowerShell script `scripts/build_windows.ps1` in a Visual Studio
-Developer Command Prompt. The script builds the extension for the supported
-Python versions and repairs the wheels with `delvewheel`.
+```powershell
+./scripts/build_windows.ps1 -MqClientZipUrl <url>
+```
+
+`delvewheel` is used to bundle the MQ runtime DLLs into the final wheels.
 
 ### Smoke test
 
-The `scripts/smoke_test.py` script performs a simple put/get round trip. It
-requires the `MQSERVER` environment variable to be set pointing at a running MQ
-queue manager.
+`scripts/smoke_test.py` connects to a queue manager and optionally performs a
+put/get round trip. Required environment variables:
+
+- `MQSERVER` – connection string in standard MQ format.
+- `MQI_SMOKE_QMGR` – queue manager name (optional).
+- `MQI_SMOKE_Q` – queue name for the optional put/get.
+- `MQI_SMOKE_PUTGET=1` – enable the put/get round trip.
 
 ## License
 
 The Python sources are distributed under a proprietary license. The IBM MQ
-Client is redistributed under the IBM license terms. Consult `LICENSE` for
-details.
+Client remains covered by the IBM International Program License Agreement
+(IPLA). Installing or using the IBM MQ Client indicates acceptance of the IBM
+terms. The PyMQI sources are licensed under the BSD-3-Clause license preserved
+in `LICENSE-THIRD-PARTY`.

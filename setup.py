@@ -1,39 +1,56 @@
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
 
-from setuptools import Extension, setup
+from setuptools import Extension, find_packages, setup
 
-# Detect MQ installation
+ROOT = Path(__file__).resolve().parent
+
+candidates = []
+if "MQ_INSTALLATION_PATH" in os.environ:
+    candidates.append(Path(os.environ["MQ_INSTALLATION_PATH"]))
+candidates.append(ROOT / "vendor" / "mq")
 if os.name == "nt":
-    DEFAULT_MQ_PATH = Path("C:/Program Files/IBM/MQ")
+    candidates.append(Path(r"C:/Program Files/IBM/MQ"))
 else:
-    DEFAULT_MQ_PATH = Path("/opt/mqm")
+    candidates.append(Path("/opt/mqm"))
 
-MQ_INSTALLATION_PATH = Path(os.environ.get("MQ_INSTALLATION_PATH", DEFAULT_MQ_PATH))
-INCLUDE_DIR = MQ_INSTALLATION_PATH / "inc"
-LIB_DIR = MQ_INSTALLATION_PATH / ("lib64" if os.name != "nt" else "lib64")
+include_dir = lib_dir = None
+for base in candidates:
+    inc = base / "include"
+    lib = base / ("lib64" if (base / "lib64").exists() else "lib")
+    if (inc / "cmqc.h").exists():
+        include_dir = inc
+        lib_dir = lib
+        break
 
-if not (INCLUDE_DIR / "cmqc.h").exists():
-    raise RuntimeError(
-        "IBM MQ header files not found. Set MQ_INSTALLATION_PATH to IBM MQ Client installation."
+if include_dir is None or lib_dir is None:
+    msg = (
+        "IBM MQ Client headers or libraries not found. "
+        "Set MQ_INSTALLATION_PATH, place files under vendor/mq, "
+        "or install the client to the system default path."
     )
+    raise RuntimeError(msg)
 
-libraries = ["mqic_r" if os.name != "nt" else "mqic"]
+libraries = ["mqic_r"]
+extra_link_args = []
+if os.name != "nt":
+    extra_link_args.append("-Wl,-rpath,$ORIGIN")
 
 extension = Extension(
     "pymqi._pymqi",
     sources=["src/pymqi/_pymqi.c"],
-    include_dirs=[str(INCLUDE_DIR)],
-    library_dirs=[str(LIB_DIR)],
+    include_dirs=[str(include_dir)],
+    library_dirs=[str(lib_dir)],
     libraries=libraries,
+    extra_link_args=extra_link_args,
 )
 
 setup(
     name="pymqi-embedded",
-    version="1.13.1+embedded.1",
+    version="1.13.1+embedded.2",
+    packages=find_packages(where="src"),
     package_dir={"": "src"},
     ext_modules=[extension],
 )

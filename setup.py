@@ -1,5 +1,7 @@
 import os
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 from typing import List
 
@@ -7,6 +9,19 @@ from setuptools import Extension, find_packages, setup
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
+
+
+def sync_upstream() -> None:
+    """Fetch PyMQI and IBM MQ runtime from upstream sources."""
+    subprocess.check_call([sys.executable, str(ROOT / "scripts" / "sync_upstream.py")])
+
+
+if {"sdist", "bdist_wheel"} & set(sys.argv):
+    sync_upstream()
+
+PYMQI_VERSION = os.environ.get("PYMQI_VERSION", "1.13.1")
+EMBEDDED_SUFFIX = os.environ.get("EMBEDDED_SUFFIX", "+embedded.2")
+PACKAGE_VERSION = f"{PYMQI_VERSION}{EMBEDDED_SUFFIX}"
 
 # ---------------------------------------------------------------------------
 # Bundle MQ runtime into the wheel
@@ -58,9 +73,13 @@ extra_link_args: List[str] = []
 if os.name != "nt":
     extra_link_args.extend(["-Wl,-rpath,$ORIGIN", "-Wl,-rpath,$ORIGIN/_mq/lib"])
 
+c_source = SRC / "pymqi" / "pymqi.c"
+if not c_source.exists():
+    c_source = SRC / "pymqi" / "_pymqi.c"
+
 extension = Extension(
     "pymqi._pymqi",
-    sources=["src/pymqi/_pymqi.c"],
+    sources=[str(c_source)],
     include_dirs=[str(include_dir)],
     library_dirs=[str(lib_dir)],
     libraries=libraries,
@@ -71,7 +90,7 @@ long_description = (ROOT / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="pymqi-embedded",
-    version="1.13.1+embedded.2",
+    version=PACKAGE_VERSION,
     description="Embedded distribution of PyMQI bundling the IBM MQ runtime libraries.",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -1,6 +1,6 @@
 # pymqi-embedded
 
-`pymqi-embedded` embeds the [PyMQI](https://pypi.org/project/pymqi/) bindings for the IBM MQ
+`pymqi-embedded` embeds the [PyMQI](https://github.com/pymqi/pymqi) bindings for the IBM MQ
 messaging system and bundles the IBM MQ Client runtime inside the wheel so that users do not
 need a system wide installation of the MQ libraries.
 
@@ -11,8 +11,9 @@ need a system wide installation of the MQ libraries.
 - Windows wheels bundle the required DLLs using [delvewheel](https://github.com/adang1345/delvewheel).
 - Pure Python API compatible with `pymqi` while keeping the import name `pymqi`.
 
-The upstream PyMQI sources are synchronized during the build process. See `scripts/sync_upstream.sh`
-and the preserved license in `LICENSE-THIRD-PARTY`.
+The upstream PyMQI sources are synchronized during the build process. See
+[`scripts/sync_upstream.sh`](scripts/sync_upstream.sh) and the preserved license in
+`LICENSE-THIRD-PARTY`.
 
 ## Running
 
@@ -37,6 +38,17 @@ cloning the repository install it in editable mode:
 ```bash
 python -m pip install -e .
 ```
+
+### Synchronizing upstream PyMQI
+
+To update the embedded PyMQI sources run:
+
+```bash
+PYMQI_VERSION=<version> scripts/sync_upstream.sh
+```
+
+The script downloads the specified PyMQI release, refreshes the contents of
+`src/pymqi` and updates `LICENSE-THIRD-PARTY`.
 
 ### Running the linters and tests
 

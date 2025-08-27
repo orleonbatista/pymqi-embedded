@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import os
 
-import pymqi
 import pytest
+
+import pymqi
 
 
 @pytest.mark.skipif("MQSERVER" not in os.environ, reason="MQSERVER not configured")

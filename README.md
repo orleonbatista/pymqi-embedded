@@ -2,14 +2,22 @@
 
 `pymqi-embedded` embeds the [PyMQI](https://github.com/pymqi/pymqi) bindings for the IBM MQ
 messaging system and bundles the IBM MQ Client runtime inside the wheel so that users do not
-need a system wide installation of the MQ libraries.
+need a system wide installation of the MQ libraries. The project is safe to run under
+`python -m compileall` because all native components are loaded lazily.
 
 ## Features
 
-- Works with Python 3.6 through 3.12.
+- Works with Python 3.8 through 3.12.
 - Linux wheels are built as `manylinux2014_x86_64` (or `manylinux_2_28_x86_64`).
 - Windows wheels bundle the required DLLs using [delvewheel](https://github.com/adang1345/delvewheel).
 - Pure Python API compatible with `pymqi` while keeping the import name `pymqi`.
+
+### Lazy loading
+
+The IBM MQ client libraries are only loaded when a function requiring them is
+first used (for example, on `QueueManager.connect`). This makes the source tree
+safe for `python -m compileall` and avoids touching any native files during
+import.
 
 The upstream PyMQI sources are synchronized during the build process. See
 [`scripts/sync_upstream.sh`](scripts/sync_upstream.sh) and the preserved license in
@@ -69,9 +77,11 @@ The script downloads the specified PyMQI release, refreshes the contents of
 ### Running the linters and tests
 
 The development tools such as `ruff`, `black`, `mypy` and `pytest` can be run
-directly once installed in the environment:
+directly once installed in the environment. The tree also passes `python -m
+compileall src/ tests/` to ensure there are no import-time side effects:
 
 ```bash
+python -m compileall src tests
 ruff src tests
 black --check src tests
 mypy src
@@ -99,10 +109,11 @@ Run inside a `manylinux` container:
 scripts/build_manylinux.sh
 ```
 
-The script synchronizes the PyMQI sources, downloads the IBM MQ client
-redistributable package (using a default IBM link) and extracts the required
-headers and libraries using `genmqpkg.sh`. It then builds wheels for CPython
-3.6–3.12 and repairs them with `auditwheel`.
+The script synchronizes the PyMQI sources, runs `python -m compileall src/
+tests/` and downloads the IBM MQ client redistributable package (using a
+default IBM link) to extract the required headers and libraries using
+`genmqpkg.sh`. It then builds wheels for CPython 3.8–3.12 and repairs them with
+`auditwheel`.
 
 ### Windows
 Use the PowerShell script `scripts/build_windows.ps1` from a Visual Studio
@@ -112,7 +123,9 @@ Developer Command Prompt:
 ./scripts/build_windows.ps1 -MqClientZipUrl <url>
 ```
 
-`delvewheel` is used to bundle the MQ runtime DLLs into the final wheels.
+The script runs `py -3 -m compileall src tests` and then builds wheels for
+CPython 3.8–3.12. `delvewheel` is used to bundle the MQ runtime DLLs into the
+final wheels.
 
 ### Smoke test
 

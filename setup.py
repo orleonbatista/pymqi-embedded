@@ -12,7 +12,7 @@ SRC = ROOT / "src"
 # Bundle MQ runtime into the wheel
 # ---------------------------------------------------------------------------
 vendor_mq = ROOT / "vendor" / "mq"
-package_mq = SRC / "pymqi" / "mq"
+package_mq = SRC / "pymqi" / "_mq"
 package_data_files: List[str] = []
 if vendor_mq.exists():
     if package_mq.exists():
@@ -56,7 +56,7 @@ if include_dir is None or lib_dir is None:
 libraries = ["mqic_r"]
 extra_link_args: List[str] = []
 if os.name != "nt":
-    extra_link_args.append("-Wl,-rpath,$ORIGIN")
+    extra_link_args.extend(["-Wl,-rpath,$ORIGIN", "-Wl,-rpath,$ORIGIN/_mq/lib"])
 
 extension = Extension(
     "pymqi._pymqi",
@@ -82,8 +82,8 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
     ],
-    python_requires=">=3.6",
-    install_requires=["dataclasses; python_version < '3.7'"],
+    python_requires=">=3.8",
+    install_requires=[],
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,

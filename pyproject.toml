@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "pymqi-embedded"
-version = "1.13.1+embedded.1"
+version = "1.13.1+embedded.2"
 description = "Embedded distribution of PyMQI bundling the IBM MQ runtime libraries."
 authors = ["Example Author <author@example.com>"]
 license = "Proprietary"

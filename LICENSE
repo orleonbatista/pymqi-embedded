@@ -1,7 +1,15 @@
-pymqi-embedded
+pymqi-embedded Proprietary License
 
-Proprietary License
+Copyright (c) 2024, The pymqi-embedded author. All rights reserved.
 
-The source code of this project is provided for internal use only. Redistribution
-of the IBM MQ Client runtime is subject to the IBM license terms. No warranty is
-provided.
+1. Project Copyright
+The Python source code, including scripts, tests, and wrappers, remains the exclusive property of the project author. No license is granted to modify, distribute, or sublicense the source code unless expressly authorized in writing by the author.
+
+2. IBM MQ Client Notice
+This package bundles binaries of the IBM MQ Client solely for convenience. These binaries are owned by IBM and are governed exclusively by the IBM International Program License Agreement (IPLA). Installing or using the IBM MQ Client components indicates your acceptance of the IPLA terms. The user acquires no rights to the IBM MQ Client beyond those granted by IBM.
+
+3. Restrictions on Use and Redistribution
+The project may be used for internal purposes only. Redistribution, sublicensing, or commercial use of this project or any portion thereof, including the IBM MQ Client binaries, is strictly prohibited without the express prior written permission of the project author. Any attempt to circumvent or modify these restrictions is void.
+
+4. Limitation of Liability
+THIS PROJECT IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. IN NO EVENT SHALL THE PROJECT AUTHOR BE LIABLE FOR ANY DAMAGES, INCLUDING BUT NOT LIMITED TO DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES ARISING FROM THE USE, INABILITY TO USE, OR DISTRIBUTION OF THIS PROJECT OR THE IBM MQ CLIENT BINARIES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.

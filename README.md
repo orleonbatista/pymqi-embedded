@@ -14,23 +14,40 @@ need a system wide installation of the MQ libraries.
 The upstream PyMQI sources are synchronized during the build process. See `scripts/sync_upstream.sh`
 and the preserved license in `LICENSE-THIRD-PARTY`.
 
-## Development
+## Running
 
-This project uses [Poetry](https://python-poetry.org/) for dependency
-management and `setuptools` for building the C extension. After cloning the
-repository run:
+Install the package and use the included smoke test to check that the IBM MQ
+Client libraries are correctly bundled:
 
 ```bash
-poetry install
+python -m pip install .
+export MQSERVER="host(port)/CHANNEL"
+python scripts/smoke_test.py
+```
+
+The script connects to the queue manager defined by `MQSERVER` and accepts the
+additional environment variables described in [Smoke test](#smoke-test) for an
+optional put/get round trip.
+
+## Development
+
+The project relies solely on `setuptools` for building and packaging. After
+cloning the repository install it in editable mode:
+
+```bash
+python -m pip install -e .
 ```
 
 ### Running the linters and tests
 
+The development tools such as `ruff`, `black`, `mypy` and `pytest` can be run
+directly once installed in the environment:
+
 ```bash
-poetry run ruff src tests
-poetry run black --check src tests
-poetry run mypy src
-poetry run pytest
+ruff src tests
+black --check src tests
+mypy src
+pytest
 ```
 
 ## Building wheels

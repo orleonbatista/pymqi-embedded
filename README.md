@@ -71,8 +71,10 @@ Run inside a `manylinux` container:
 MQ_CLIENT_TAR_URL=<url to MQ client> scripts/build_manylinux.sh
 ```
 
-The script synchronizes the PyMQI sources, builds wheels for CPython 3.8–3.12
-and repairs them with `auditwheel`.
+The script synchronizes the PyMQI sources, downloads the IBM MQ client
+redistributable package and extracts the required headers and libraries using
+`genmqpkg.sh`. It then builds wheels for CPython 3.8–3.12 and repairs them with
+`auditwheel`.
 
 ### Windows
 Use the PowerShell script `scripts/build_windows.ps1` from a Visual Studio

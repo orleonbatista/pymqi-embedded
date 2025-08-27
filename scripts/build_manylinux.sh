@@ -8,18 +8,15 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VENDOR_DIR="$ROOT_DIR/vendor/mq"
 
 rm -rf "$VENDOR_DIR"
-mkdir -p "$VENDOR_DIR"
 
-if [[ -n "${MQ_CLIENT_TAR_PATH:-}" ]]; then
-  tar -xzf "$MQ_CLIENT_TAR_PATH" -C "$VENDOR_DIR" --strip-components=1
-elif [[ -n "${MQ_CLIENT_TAR_URL:-}" ]]; then
-  curl -L "$MQ_CLIENT_TAR_URL" | tar -xz -C "$VENDOR_DIR" --strip-components=1
-else
+if [[ -z "${MQ_CLIENT_TAR_PATH:-}" && -z "${MQ_CLIENT_TAR_URL:-}" ]]; then
   echo "Provide MQ_CLIENT_TAR_URL or MQ_CLIENT_TAR_PATH" >&2
   exit 1
 fi
 
 "$ROOT_DIR/scripts/sync_upstream.sh"
+
+unset MQ_CLIENT_TAR_URL MQ_CLIENT_TAR_PATH
 
 for PYVER in cp38 cp39 cp310 cp311 cp312; do
   PYBIN="/opt/python/${PYVER}/bin"

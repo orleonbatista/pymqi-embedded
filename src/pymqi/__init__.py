@@ -1,9 +1,7 @@
 """Simplified PyMQI API for testing purposes."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass, field
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple
 
 from ._version import __version__
 
@@ -37,12 +35,12 @@ class Queue:
 __all__ = ["QueueManager", "Queue", "__version__"]
 
 
-def MQCONNX(qmgr_name: str, cd: Any | None) -> Tuple[int, int]:
+def MQCONNX(qmgr_name: str, cd: Optional[Any]) -> Tuple[int, int]:
     """Stub MQCONNX returning success."""
     return 0, 0  # pragma: no cover - placeholder
 
 
-def MQDISC(hconn: Any | None) -> Tuple[int, int]:
+def MQDISC(hconn: Optional[Any]) -> Tuple[int, int]:
     """Stub MQDISC returning success."""
     return 0, 0  # pragma: no cover - placeholder
 

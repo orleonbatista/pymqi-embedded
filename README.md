@@ -6,7 +6,7 @@ need a system wide installation of the MQ libraries.
 
 ## Features
 
-- Works with Python 3.8 through 3.12.
+- Works with Python 3.6 through 3.12.
 - Linux wheels are built as `manylinux2014_x86_64` (or `manylinux_2_28_x86_64`).
 - Windows wheels bundle the required DLLs using [delvewheel](https://github.com/adang1345/delvewheel).
 - Pure Python API compatible with `pymqi` while keeping the import name `pymqi`.
@@ -14,6 +14,22 @@ need a system wide installation of the MQ libraries.
 The upstream PyMQI sources are synchronized during the build process. See
 [`scripts/sync_upstream.sh`](scripts/sync_upstream.sh) and the preserved license in
 `LICENSE-THIRD-PARTY`.
+
+## Build prerequisites
+
+Install required system tools (example for yum-based distributions):
+
+```bash
+yum install -y gcc make curl tar rsync
+```
+
+Python packages needed for building:
+
+```bash
+python -m pip install build
+# Python 3.6 additionally requires the dataclasses backport
+python -m pip install dataclasses
+```
 
 ## Running
 
@@ -80,13 +96,13 @@ vendor/mq/
 Run inside a `manylinux` container:
 
 ```bash
-MQ_CLIENT_TAR_URL=<url to MQ client> scripts/build_manylinux.sh
+scripts/build_manylinux.sh
 ```
 
 The script synchronizes the PyMQI sources, downloads the IBM MQ client
-redistributable package and extracts the required headers and libraries using
-`genmqpkg.sh`. It then builds wheels for CPython 3.8–3.12 and repairs them with
-`auditwheel`.
+redistributable package (using a default IBM link) and extracts the required
+headers and libraries using `genmqpkg.sh`. It then builds wheels for CPython
+3.6–3.12 and repairs them with `auditwheel`.
 
 ### Windows
 Use the PowerShell script `scripts/build_windows.ps1` from a Visual Studio

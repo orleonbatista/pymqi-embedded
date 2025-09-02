@@ -19,7 +19,7 @@ def main() -> None:
 
     build_dir.mkdir(parents=True, exist_ok=True)
 
-    pymqi_version = os.environ.get("PYMQI_VERSION", "1.13.1")
+    pymqi_version = os.environ.get("PYMQI_VERSION", "1.12.11")
     embedded_suffix = os.environ.get("EMBEDDED_SUFFIX", "+embedded.2")
     sdist_path = Path(
         os.environ.get("PYMQI_SDIST_PATH", build_dir / f"pymqi-{pymqi_version}.tar.gz")

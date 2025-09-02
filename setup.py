@@ -5,7 +5,18 @@ import sys
 from pathlib import Path
 from typing import List
 
-from setuptools import Extension, find_packages, setup
+try:
+    from setuptools import Extension, find_packages, setup
+    import wheel.bdist_wheel  # noqa: F401 - ensure command is registered
+except ModuleNotFoundError:  # pragma: no cover - executed only in lean envs
+    for path in (
+        "/usr/lib/python3/dist-packages",
+        "/usr/local/lib/python3/dist-packages",
+    ):
+        if path not in sys.path:
+            sys.path.append(path)
+    from setuptools import Extension, find_packages, setup  # type: ignore
+    import wheel.bdist_wheel  # type: ignore # noqa: F401
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"

@@ -30,7 +30,7 @@ def sync_upstream() -> None:
 if {"sdist", "bdist_wheel"} & set(sys.argv):
     sync_upstream()
 
-PYMQI_VERSION = os.environ.get("PYMQI_VERSION", "1.13.1")
+PYMQI_VERSION = os.environ.get("PYMQI_VERSION", "1.12.11")
 EMBEDDED_SUFFIX = os.environ.get("EMBEDDED_SUFFIX", "+embedded.2")
 PACKAGE_VERSION = f"{PYMQI_VERSION}{EMBEDDED_SUFFIX}"
 

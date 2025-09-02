@@ -23,20 +23,28 @@ The upstream PyMQI sources are synchronized during the build process. See
 [`scripts/sync_upstream.py`](scripts/sync_upstream.py) and the preserved license in
 `LICENSE-THIRD-PARTY`.
 
-## Build prerequisites
+## Quick build
 
-Install required system tools (example for yum-based distributions):
+To verify the source tree and produce distributable artifacts run:
 
 ```bash
-yum install -y gcc make curl tar rsync
+python -m compileall
+python setup.py sdist bdist_wheel
 ```
 
-Python packages needed for building:
+During the build the `setup.py` script downloads the upstream PyMQI release and
+the IBM MQ Client runtime, bundling them into the resulting wheel. The setup
+script also falls back to system locations such as `/usr/lib/python3/dist-packages`
+to locate `setuptools` and `wheel` when they are not installed in the active
+environment, so only the two commands above are needed on a networked machine.
+
+## Build prerequisites
+
+Install required system tools and Python build helpers (example for yum-based
+distributions):
 
 ```bash
-python -m pip install build
-# Python 3.6 additionally requires the dataclasses backport
-python -m pip install dataclasses
+yum install -y gcc make curl tar rsync python3-setuptools python3-wheel
 ```
 
 ## Development

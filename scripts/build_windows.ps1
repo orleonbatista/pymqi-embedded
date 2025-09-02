@@ -18,7 +18,7 @@ if ($MqClientZipPath) {
     throw 'Provide -MqClientZipUrl or -MqClientZipPath'
 }
 
-& (Join-Path $root 'scripts/sync_upstream.sh')
+& py -3 (Join-Path $root 'scripts/sync_upstream.py')
 py -3 -m compileall src tests
 
 $pythons = @('38','39','310','311','312')
@@ -32,6 +32,6 @@ foreach ($ver in $pythons) {
     }
     Remove-Item -Recurse -Force build,pymqi_embedded.egg-info
     git checkout -- src/pymqi
-    & (Join-Path $root 'scripts/sync_upstream.sh')
+    & py -3 (Join-Path $root 'scripts/sync_upstream.py')
     py -3 -m compileall src tests
 }

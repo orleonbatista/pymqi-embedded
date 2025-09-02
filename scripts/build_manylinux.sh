@@ -11,7 +11,7 @@ rm -rf "$VENDOR_DIR"
 
 MQ_CLIENT_TAR_URL="${MQ_CLIENT_TAR_URL:-https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.3.5.0-IBM-MQC-Redist-LinuxX64.tar.gz}"
 
-"$ROOT_DIR/scripts/sync_upstream.sh"
+python "$ROOT_DIR/scripts/sync_upstream.py"
 python -m compileall src/ tests/
 
 unset MQ_CLIENT_TAR_URL MQ_CLIENT_TAR_PATH
@@ -24,6 +24,6 @@ for PYVER in cp38 cp39 cp310 cp311 cp312; do
   done
   rm -rf build pymqi_embedded.egg-info dist/pymqi_embedded-*.whl
   git checkout -- src/pymqi
-  "$ROOT_DIR/scripts/sync_upstream.sh"
+  python "$ROOT_DIR/scripts/sync_upstream.py"
   python -m compileall src/ tests/
 done

@@ -20,7 +20,7 @@ safe for `python -m compileall` and avoids touching any native files during
 import.
 
 The upstream PyMQI sources are synchronized during the build process. See
-[`scripts/sync_upstream.sh`](scripts/sync_upstream.sh) and the preserved license in
+[`scripts/sync_upstream.py`](scripts/sync_upstream.py) and the preserved license in
 `LICENSE-THIRD-PARTY`.
 
 ## Build prerequisites
@@ -39,21 +39,6 @@ python -m pip install build
 python -m pip install dataclasses
 ```
 
-## Running
-
-Install the package and use the included smoke test to check that the IBM MQ
-Client libraries are correctly bundled:
-
-```bash
-python -m pip install .
-export MQSERVER="host(port)/CHANNEL"
-python scripts/smoke_test.py
-```
-
-The script connects to the queue manager defined by `MQSERVER` and accepts the
-additional environment variables described in [Smoke test](#smoke-test) for an
-optional put/get round trip.
-
 ## Development
 
 The project relies solely on `setuptools` for building and packaging. After
@@ -68,7 +53,7 @@ python -m pip install -e .
 To update the embedded PyMQI sources run:
 
 ```bash
-PYMQI_VERSION=<version> scripts/sync_upstream.sh
+PYMQI_VERSION=<version> python scripts/sync_upstream.py
 ```
 
 The script downloads the specified PyMQI release, refreshes the contents of
@@ -126,16 +111,6 @@ Developer Command Prompt:
 The script runs `py -3 -m compileall src tests` and then builds wheels for
 CPython 3.8–3.12. `delvewheel` is used to bundle the MQ runtime DLLs into the
 final wheels.
-
-### Smoke test
-
-`scripts/smoke_test.py` connects to a queue manager and optionally performs a
-put/get round trip. Required environment variables:
-
-- `MQSERVER` – connection string in standard MQ format.
-- `MQI_SMOKE_QMGR` – queue manager name (optional).
-- `MQI_SMOKE_Q` – queue name for the optional put/get.
-- `MQI_SMOKE_PUTGET=1` – enable the put/get round trip.
 
 ## License
 
